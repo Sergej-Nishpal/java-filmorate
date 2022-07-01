@@ -26,6 +26,7 @@ public class FilmController {
     }
 
     @PostMapping
+    @SuppressWarnings("UnusedReturnValue")
     public Film createFilm(@Valid @RequestBody Film film) {
         validate(film);
         film.setId(filmIdGenerator.generateId());
