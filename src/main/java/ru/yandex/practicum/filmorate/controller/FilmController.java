@@ -8,11 +8,12 @@ import java.util.Map;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.service.FilmIdGenerator;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/films")
-@Slf4j
 public class FilmController {
     private static final LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
 
@@ -38,7 +39,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
-            log.warn("Фильм с id {} не найден.", film.getId());
+            log.error("Фильм с id {} не найден.", film.getId());
             throw new ValidationException("Фильм с id = " + film.getId()
                     + " не найден и не может быть обновлён!");
         }
@@ -50,16 +51,8 @@ public class FilmController {
 
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(CINEMA_BORN_DATE)) {
-            log.warn("Фильм \"{}\" не прошёл валидацию!", film.getName());
+            log.error("Фильм \"{}\" не прошёл валидацию!", film.getName());
             throw new ValidationException("Указана некорректная дата релиза фильма!");
         }
-    }
-}
-
-class FilmIdGenerator {
-    private long id;
-
-    long generateId() {
-        return ++id;
     }
 }

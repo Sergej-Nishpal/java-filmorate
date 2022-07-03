@@ -14,14 +14,18 @@ public class Film {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
     private Long id;
+
     @NotNull
     @NotBlank
     private String name;
+
     @Size(max = MAX_DESCRIPTION_LENGTH,
             message = "Максимальная длина описания ограничена: " + MAX_DESCRIPTION_LENGTH + " символов!")
     private String description;
+
     @NotNull
     private LocalDate releaseDate;
+
     @NotNull
     @Positive(message = "Длительность фильма должна быть больше нуля!")
     private int duration;
