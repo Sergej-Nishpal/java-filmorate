@@ -7,6 +7,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -31,7 +33,7 @@ class UserControllerValidationTest {
     private final static String EMPTY_EMAIL = "";
     private final static String INCORRECT_EMAIL = "sergej.nishpal_yandex.ru";
 
-    private final UserController userController = new UserController();
+    private final UserStorage userStorage = new InMemoryUserStorage();
     private Validator validator;
 
     @BeforeEach
@@ -75,7 +77,7 @@ class UserControllerValidationTest {
                 .birthday(CORRECT_BIRTHDAY)
                 .build();
 
-        ValidationException exception = assertThrows(ValidationException.class, () -> userController.createUser(user));
+        ValidationException exception = assertThrows(ValidationException.class, () -> userStorage.createUser(user));
         final String expectedMessage = "Логин не должен содержать пробелы!";
         final String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage, "Сообщения об исключении не совпадают!");
@@ -90,7 +92,7 @@ class UserControllerValidationTest {
                 .birthday(CORRECT_BIRTHDAY)
                 .build();
 
-        User createdUser = userController.createUser(user);
+        User createdUser = userStorage.createUser(user);
         final String expectedName = "Sergej_N";
         final String actualName = createdUser.getName();
         assertEquals(expectedName, actualName, "Актуальное имя пользователя не соответствует ожидаемому!");
