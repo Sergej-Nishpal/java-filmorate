@@ -7,4 +7,5 @@ public interface UserStorage {
     Collection<User> findAllUsers();
     User createUser(User user);
     User updateUser(User user);
+    User getUserById(long id);
 }

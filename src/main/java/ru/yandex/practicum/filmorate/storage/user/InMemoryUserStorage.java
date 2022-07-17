@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 @Slf4j
 @Component
@@ -47,6 +46,11 @@ public class InMemoryUserStorage implements UserStorage {
         users.put(user.getId(), user);
         log.debug("Обновлен пользователь с id = {}", user.getId());
         return user;
+    }
+
+    @Override
+    public User getUserById(long id) {
+        return users.get(id);
     }
 
     private void validate(User user) {
