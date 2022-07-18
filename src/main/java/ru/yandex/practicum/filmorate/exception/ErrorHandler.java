@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ValidationException.class, IncorrectParameterException.class})
+    @ExceptionHandler({ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST) // TODO 400
     public ErrorResponse handleValidation(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());

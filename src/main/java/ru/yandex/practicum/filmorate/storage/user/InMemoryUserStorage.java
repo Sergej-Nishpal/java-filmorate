@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
@@ -42,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(User user) {
         if (!users.containsKey(user.getId())) {
             log.error("Пользователь с id {} не найден.", user.getId());
-            throw new ValidationException("Пользователь с id = " + user.getId()
+            throw new UserNotFoundException("Пользователь с id = " + user.getId()
                     + " не найден и не может быть обновлён!");
         }
 
@@ -55,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User getUserById(long id) {
         if (id <= 0) {
             log.error("Передан некорректный id = {}.", id);
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "id", id));
+            throw new UserNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
 
         return users.get(id);

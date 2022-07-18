@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import java.util.Collection;
@@ -20,11 +20,11 @@ public class FilmService {
 
     public void setLike(long filmId, long userId) {
         if (filmId <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "id", filmId));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", filmId));
         }
 
         if (userId <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "userId", userId));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "userId", userId));
         }
 
         filmStorage.getFilmById(filmId)
@@ -34,11 +34,11 @@ public class FilmService {
 
     public void unlike(long filmId, long userId) {
         if (filmId <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "id", filmId));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", filmId));
         }
 
         if (userId <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "userId", userId));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "userId", userId));
         }
 
         filmStorage.getFilmById(filmId)
@@ -48,11 +48,11 @@ public class FilmService {
 
     public Collection<Film> getPopularFilms(int count) {
         if (count <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "count", count));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "count", count));
         }
 
         return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> film.getLikes().size()))
+                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
                 .limit(count)
                 .collect(Collectors.toList());
     }

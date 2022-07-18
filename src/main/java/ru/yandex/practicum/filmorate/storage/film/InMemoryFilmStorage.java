@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
@@ -38,7 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         if (!films.containsKey(film.getId())) {
             log.error("Фильм с id {} не найден.", film.getId());
-            throw new ValidationException("Фильм с id = " + film.getId()
+            throw new FilmNotFoundException("Фильм с id = " + film.getId()
                     + " не найден и не может быть обновлён!");
         }
 
@@ -50,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilmById(long id) {
         if (id <= 0) {
-            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "id", id));
+            throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
         return films.get(id);
     }
