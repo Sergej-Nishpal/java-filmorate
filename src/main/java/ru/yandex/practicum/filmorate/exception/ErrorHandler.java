@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
 
     @ExceptionHandler({ValidationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // TODO 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND) // TODO 404
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler({Throwable.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // TODO 500
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable() {
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
