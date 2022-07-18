@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
+    private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d.";
 
     private final Map<Long, Film> films = new HashMap<>();
     private final FilmIdGenerator filmIdGenerator = new FilmIdGenerator();
@@ -44,6 +45,14 @@ public class InMemoryFilmStorage implements FilmStorage {
         validate(film);
         films.put(film.getId(), film);
         return film;
+    }
+
+    @Override
+    public Film getFilmById(long id) {
+        if (id <= 0) {
+            throw new IncorrectParameterException(String.format(INCORRECT_PARAMETER, "id", id));
+        }
+        return films.get(id);
     }
 
     private void validate(Film film) {

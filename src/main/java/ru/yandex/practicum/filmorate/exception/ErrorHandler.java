@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({ValidationException.class})
+    @ExceptionHandler({ValidationException.class, IncorrectParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST) // TODO 400
     public ErrorResponse handleValidation(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND) // TODO 404
     public ErrorResponse handleNotFound(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());

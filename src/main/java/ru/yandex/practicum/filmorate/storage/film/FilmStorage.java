@@ -7,4 +7,5 @@ public interface FilmStorage {
     Collection<Film> getAllFilms();
     Film createFilm(Film film);
     Film updateFilm(Film film);
+    Film getFilmById(long filmId);
 }
