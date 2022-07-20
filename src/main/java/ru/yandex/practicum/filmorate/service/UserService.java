@@ -39,7 +39,7 @@ public class UserService {
         return userStorage.getUserById(id);
     }
 
-    public void makeFriends(long userId, long friendId) {
+    public void createFriendship(long userId, long friendId) {
         if (userId <= 0) {
             throw new UserNotFoundException(String.format(INCORRECT_PARAMETER, "id", userId));
         }
@@ -67,7 +67,7 @@ public class UserService {
         log.debug(String.format("Пользователи с id %d и %d теперь друзья.", userId, friendId));
     }
 
-    public void unfriends(long userId, long friendId) {
+    public void deleteFriendship(long userId, long friendId) {
         if (userId <= 0) {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "id", userId));
         }
