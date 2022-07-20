@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -9,13 +8,32 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class FilmService {
     private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d.";
 
     @Autowired
-    private FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
+
+    public FilmService(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
+
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film createFilm(Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public Film getFilmById(long id) {
+        return filmStorage.getFilmById(id);
+    }
 
     public void setLike(long filmId, long userId) {
         if (filmId <= 0) {
