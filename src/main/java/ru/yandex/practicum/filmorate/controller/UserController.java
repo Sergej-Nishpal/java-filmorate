@@ -1,41 +1,41 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import java.util.Collection;
-import javax.validation.Valid;
-import ru.yandex.practicum.filmorate.model.User;
-import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private UserStorage userStorage;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public Collection<User> findAllUsers() {
-        return userStorage.findAllUsers();
+        return userService.findAllUsers();
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        return userStorage.createUser(user);
+        return userService.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        return userStorage.updateUser(user);
+        return userService.updateUser(user);
     }
 
     @GetMapping("/{id}")
     public User getUserInfo(@PathVariable("id") Long userId) {
-        return userStorage.getUserById(userId);
+        return userService.getUserById(userId);
     }
 
     @PutMapping("/{id}/friends/{friendId}")

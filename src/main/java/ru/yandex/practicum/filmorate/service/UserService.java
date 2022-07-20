@@ -17,7 +17,27 @@ public class UserService {
     private static final String INCORRECT_PARAMETER = "Некорректный параметр: %s = %d.";
 
     @Autowired
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
+
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
+
+    public Collection<User> findAllUsers() {
+        return userStorage.findAllUsers();
+    }
+
+    public User createUser(User user) {
+        return userStorage.createUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public User getUserById(long id) {
+        return userStorage.getUserById(id);
+    }
 
     public void makeFriends(long userId, long friendId) {
         if (userId <= 0) {
@@ -82,7 +102,7 @@ public class UserService {
 
         return userStorage.getUserById(userId).getFriends()
                 .stream()
-                .map(friendId -> userStorage.getUserById(friendId))
+                .map(userStorage::getUserById)
                 .collect(Collectors.toList());
     }
 
@@ -97,13 +117,13 @@ public class UserService {
 
         return userStorage.getUserById(userId).getFriends()
                 .stream()
-                .map(friendId -> userStorage.getUserById(friendId))
+                .map(userStorage::getUserById)
                 .collect(Collectors.toList())
                 .stream()
                 .filter(user ->
                         userStorage.getUserById(otherId).getFriends()
                         .stream()
-                        .map(otherFriendId -> userStorage.getUserById(otherFriendId))
+                        .map(userStorage::getUserById)
                         .collect(Collectors.toList())
                                 .contains(user))
                 .collect(Collectors.toList());
