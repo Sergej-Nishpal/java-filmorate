@@ -7,6 +7,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -27,7 +29,7 @@ class FilmControllerValidationTest {
     private final static int CORRECT_FILM_DURATION = 105;
     private final static int INCORRECT_FILM_DURATION = 0;
 
-    private final FilmController filmController = new FilmController();
+    private final FilmStorage filmStorage = new InMemoryFilmStorage();
     private Validator validator;
 
     @BeforeEach
@@ -61,7 +63,7 @@ class FilmControllerValidationTest {
                 .duration(CORRECT_FILM_DURATION)
                 .build();
 
-        ValidationException exception = assertThrows(ValidationException.class, () -> filmController.createFilm(film));
+        ValidationException exception = assertThrows(ValidationException.class, () -> filmStorage.createFilm(film));
         final String expectedMessage = "Указана некорректная дата релиза фильма!";
         final String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage, "Сообщения об исключении не совпадают!");

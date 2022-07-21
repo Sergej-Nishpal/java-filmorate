@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage.film;
 
-public class UserIdGenerator {
+public class FilmIdGenerator {
     private long id;
 
     public long generateId() {
