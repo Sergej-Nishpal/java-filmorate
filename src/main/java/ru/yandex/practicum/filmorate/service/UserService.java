@@ -117,15 +117,10 @@ public class UserService {
 
         return userStorage.getUserById(userId).getFriends()
                 .stream()
-                .map(userStorage::getUserById)
+                .filter(userStorage.getUserById(otherId).getFriends()::contains)
                 .collect(Collectors.toList())
                 .stream()
-                .filter(user ->
-                        userStorage.getUserById(otherId).getFriends()
-                        .stream()
-                        .map(userStorage::getUserById)
-                        .collect(Collectors.toList())
-                                .contains(user))
+                .map(this::getUserById)
                 .collect(Collectors.toList());
     }
 }
