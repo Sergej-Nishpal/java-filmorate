@@ -53,7 +53,7 @@ public class UserService {
                 .filter(user -> user.getId().equals(userId))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, userId)))
-                .getFriends()
+                .getFriendshipStatus().keySet()
                 .add(friendId);
 
         userStorage.findAllUsers()
@@ -61,7 +61,7 @@ public class UserService {
                 .filter(user -> user.getId().equals(friendId))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, friendId)))
-                .getFriends()
+                .getFriendshipStatus().keySet()
                 .add(userId);
 
         log.debug(String.format("Пользователи с id %d и %d теперь друзья.", userId, friendId));
@@ -81,7 +81,7 @@ public class UserService {
                 .filter(user -> user.getId().equals(userId))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, userId)))
-                .getFriends()
+                .getFriendshipStatus().keySet()
                 .remove(friendId);
 
         userStorage.findAllUsers()
@@ -89,7 +89,7 @@ public class UserService {
                 .filter(user -> user.getId().equals(friendId))
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, friendId)))
-                .getFriends()
+                .getFriendshipStatus().keySet()
                 .remove(userId);
 
         log.debug(String.format("Пользователи с id %d и %d теперь не друзья.", userId, friendId));
@@ -100,7 +100,7 @@ public class UserService {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "id", userId));
         }
 
-        return userStorage.getUserById(userId).getFriends()
+        return userStorage.getUserById(userId).getFriendshipStatus().keySet()
                 .stream()
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
@@ -115,9 +115,9 @@ public class UserService {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "otherId", otherId));
         }
 
-        return userStorage.getUserById(userId).getFriends()
+        return userStorage.getUserById(userId).getFriendshipStatus().keySet()
                 .stream()
-                .filter(userStorage.getUserById(otherId).getFriends()::contains)
+                .filter(userStorage.getUserById(otherId).getFriendshipStatus().keySet()::contains)
                 .collect(Collectors.toList())
                 .stream()
                 .map(this::getUserById)
