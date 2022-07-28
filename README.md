@@ -4,6 +4,74 @@
 
 > ![Filmorate.png](images/Filmorate.png)
 
+## Текстовая часть диаграммы:
+
+```
+Table "users" {
+  "id" INT8 [pk]
+  "email" VARCHAR [unique, not null]
+  "login" VARCHAR [unique, not null]
+  "name" VARCHAR
+  "birthday" DATE
+}
+
+Table "friendship_status" {
+  "id" INT2 [pk]
+  "name" VARCHAR [unique, not null]
+}
+
+Table "friendship" {
+  "user_id" INT8 [unique, not null]
+  "friend_id" INT8 [unique, not null]
+  "status_id" INT2 [unique, not null]
+}
+
+Table "mpa_rating" {
+  "id" INT2 [pk]
+  "name" VARCHAR [unique, not null]
+}
+
+Table "films" {
+  "id" INT8 [pk]
+  "name" VARCHAR [unique, not null]
+  "description" VARCHAR(200) [not null]
+  "release_date" DATE
+  "duration" INT2
+  "mpa_rating_id" INT2 [not null]
+}
+
+Table "genre" {
+  "id" INT2 [pk]
+  "name" VARCHAR [unique, not null]
+}
+
+Table "film_genres" {
+  "film_id" INT8 [unique, not null]
+  "genre_id" INT2 [unique, not null]
+}
+
+Table "film_like" {
+  "film_id" INT8 [unique, not null]
+  "user_id" INT8 [unique, not null]
+}
+
+Ref:"users"."id" < "friendship"."user_id"
+
+Ref:"users"."id" < "friendship"."friend_id"
+
+Ref:"friendship_status"."id" < "friendship"."status_id"
+
+Ref:"mpa_rating"."id" < "films"."mpa_rating_id"
+
+Ref:"films"."id" < "film_genres"."film_id"
+
+Ref:"genre"."id" < "film_genres"."genre_id"
+
+Ref:"films"."id" < "film_like"."film_id"
+
+Ref:"users"."id" < "film_like"."user_id"
+```
+
 ## Описание:
 
 1) Основные сущности проекта - пользователи (таблица users) и фильмы (таблица films).
