@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS friendships (
   user_id   INTEGER NOT NULL,
   friend_id INTEGER NOT NULL,
   status_id INTEGER NOT NULL,
-  UNIQUE (user_id, friend_id, status_id)
+  PRIMARY KEY (user_id, friend_id, status_id)
 );
 ALTER TABLE friendships ADD CONSTRAINT fk_user_users      FOREIGN KEY (user_id)   REFERENCES users (user_id);
 ALTER TABLE friendships ADD CONSTRAINT fk_friend_users    FOREIGN KEY (friend_id) REFERENCES users (user_id);
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS film_genres (
   film_id  INTEGER NOT NULL,
   genre_id INTEGER NOT NULL,
-  UNIQUE (film_id, genre_id)
+  PRIMARY KEY (film_id, genre_id)
 );
 ALTER TABLE film_genres ADD CONSTRAINT fk_fg_films   FOREIGN KEY (film_id)  REFERENCES films (film_id);
 ALTER TABLE film_genres ADD CONSTRAINT fk_fg_genres FOREIGN KEY (genre_id) REFERENCES genres (genre_id);
@@ -52,7 +52,7 @@ ALTER TABLE film_genres ADD CONSTRAINT fk_fg_genres FOREIGN KEY (genre_id) REFER
 CREATE TABLE IF NOT EXISTS film_likes (
   film_id  INTEGER NOT NULL,
   user_id  INTEGER NOT NULL,
-  UNIQUE (film_id, user_id)
+  PRIMARY KEY (film_id, user_id)
 );
 ALTER TABLE film_likes ADD CONSTRAINT fk_fl_films FOREIGN KEY (film_id) REFERENCES films (film_id);
 ALTER TABLE film_likes ADD CONSTRAINT fk_fl_users FOREIGN KEY (user_id) REFERENCES users (user_id);
