@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-import lombok.Builder;
 import java.util.HashSet;
 import java.time.LocalDate;
 import javax.validation.constraints.Size;
@@ -10,8 +11,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-@Data
+@Getter
+@Setter
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Film {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
@@ -37,5 +43,16 @@ public class Film {
     private final Set<Genre> genres = new HashSet<>();
 
     @NotNull
-    private final RatingMPA ratingMPA;
+    private Mpa mpa;
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> filmMap = new HashMap<>();
+        filmMap.put("film_name", name);
+        filmMap.put("description", description);
+        filmMap.put("release_date", releaseDate);
+        filmMap.put("duration", duration);
+        filmMap.put("mpa_id", mpa.getId());
+        filmMap.put("mpa_name", mpa.getMpaName());
+        return filmMap;
+    }
 }

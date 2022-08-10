@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Genre {
+public class Mpa {
     private Long id;
 
     @NotNull
     @NotEmpty
-    private String genreName;
+    private String mpaName;
 }

@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
-import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
-import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -16,10 +16,9 @@ public class UserService {
     private static final String USER_ID_NOT_FOUND = "Пользователь с id %d не найден";
     private static final String INCORRECT_PARAMETER = "Некорректный параметр: %s = %d.";
 
-    @Autowired
     private final UserStorage userStorage;
 
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
