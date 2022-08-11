@@ -28,7 +28,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> findAllUsers() {
-        final String sqlQuery = "SELECT * FROM users";
+        final String sqlQuery = "SELECT * FROM USERS";
         log.debug("Запрашиваем всех пользователей из БД.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
@@ -42,8 +42,8 @@ public class UserDbStorage implements UserStorage {
         }
 
         SimpleJdbcInsert insertUser = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("users")
-                .usingGeneratedKeyColumns("user_id");
+                .withTableName("USERS")
+                .usingGeneratedKeyColumns("USER_ID");
         final long userId = insertUser.executeAndReturnKey(user.toMap()).longValue();
         user.setId(userId);
         log.debug("Добавлен пользователь с логином \"{}\" (новый id: {})", user.getLogin(), userId);
@@ -61,7 +61,7 @@ public class UserDbStorage implements UserStorage {
         }
 
         validate(user);
-        final String sqlQuery = "UPDATE users SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+        final String sqlQuery = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? WHERE USER_ID = ?";
         final int recordsUpdated =
                 jdbcTemplate.update(sqlQuery,
                 user.getEmail(),
@@ -80,7 +80,7 @@ public class UserDbStorage implements UserStorage {
             throw new UserNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
 
-        final String sqlQuery = "SELECT * FROM users WHERE USER_ID = ?";
+        final String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
         log.debug("Запрашиваем пользователя с id {}.", id);
         return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
     }
@@ -94,11 +94,11 @@ public class UserDbStorage implements UserStorage {
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
-                .id(resultSet.getLong("user_id"))
-                .email(resultSet.getString("email"))
-                .login(resultSet.getString("login"))
-                .name(resultSet.getString("user_name"))
-                .birthday(resultSet.getDate("birthday").toLocalDate())
+                .id(resultSet.getLong("USER_ID"))
+                .email(resultSet.getString("EMAIL"))
+                .login(resultSet.getString("LOGIN"))
+                .name(resultSet.getString("USER_NAME"))
+                .birthday(resultSet.getDate("BIRTHDAY").toLocalDate())
                 .build();
     }
 }

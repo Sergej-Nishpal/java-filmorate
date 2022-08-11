@@ -47,12 +47,11 @@ public class Film {
 
     public Map<String, Object> toMap() {
         Map<String, Object> filmMap = new HashMap<>();
-        filmMap.put("film_name", name);
-        filmMap.put("description", description);
-        filmMap.put("release_date", releaseDate);
-        filmMap.put("duration", duration);
-        filmMap.put("mpa_id", mpa.getId());
-        filmMap.put("mpa_name", mpa.getMpaName());
+        filmMap.put("FILM_NAME", name);
+        filmMap.put("DESCRIPTION", description);
+        filmMap.put("RELEASE_DATE", releaseDate);
+        filmMap.put("DURATION", duration);
+        filmMap.put("MPA_ID", mpa.getId());
         return filmMap;
     }
 }

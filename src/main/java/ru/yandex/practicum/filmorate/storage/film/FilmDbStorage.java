@@ -31,7 +31,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAllFilms() {
-        final String sqlQuery = "SELECT * FROM films LEFT JOIN MPAS M on M.MPA_ID = FILMS.MPA_ID";
+        final String sqlQuery = "SELECT * FROM FILMS LEFT JOIN MPAS M on M.MPA_ID = FILMS.MPA_ID";
         log.debug("Запрашиваем все фильмы из БД.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
@@ -40,8 +40,8 @@ public class FilmDbStorage implements FilmStorage {
     public Film createFilm(Film film) {
         validate(film);
         SimpleJdbcInsert insertFilm = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("films")
-                .usingGeneratedKeyColumns("film_id");
+                .withTableName("FILMS")
+                .usingGeneratedKeyColumns("FILM_ID");
         final long filmId = insertFilm.executeAndReturnKey(film.toMap()).longValue();
         film.setId(filmId);
         log.debug("Добавлен фильм \"{}\" (новый id: {})", film.getName(), filmId);
@@ -85,7 +85,7 @@ public class FilmDbStorage implements FilmStorage {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
 
-        final String sqlQuery = "SELECT * FROM films LEFT JOIN MPAS M on M.MPA_ID = FILMS.MPA_ID WHERE FILM_ID = ?";
+        final String sqlQuery = "SELECT * FROM FILMS LEFT JOIN MPAS M on M.MPA_ID = FILMS.MPA_ID WHERE FILM_ID = ?";
         log.debug("Запрашиваем фильм с id {}.", id);
         return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
     }
@@ -99,12 +99,12 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
-                .id(resultSet.getLong("film_id"))
-                .name(resultSet.getString("film_name"))
-                .description(resultSet.getString("description"))
-                .releaseDate(resultSet.getDate("release_date").toLocalDate())
-                .duration(resultSet.getInt("duration"))
-                .mpa(new Mpa(resultSet.getLong("mpa_id"), resultSet.getString("mpa_name")))
+                .id(resultSet.getLong("FILM_ID"))
+                .name(resultSet.getString("FILM_NAME"))
+                .description(resultSet.getString("DESCRIPTION"))
+                .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
+                .duration(resultSet.getInt("DURATION"))
+                .mpa(new Mpa(resultSet.getLong("MPA_ID"), resultSet.getString("mpa_name")))
                 .build();
     }
 }
