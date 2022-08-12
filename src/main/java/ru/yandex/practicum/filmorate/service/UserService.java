@@ -6,20 +6,22 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService {
-    private static final String USER_ID_NOT_FOUND = "Пользователь с id %d не найден";
     private static final String INCORRECT_PARAMETER = "Некорректный параметр: %s = %d.";
 
     private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
 
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
+                       @Qualifier("friendshipDbStorage") FriendshipStorage friendshipStorage) {
         this.userStorage = userStorage;
+        this.friendshipStorage = friendshipStorage;
     }
 
     public Collection<User> findAllUsers() {
@@ -47,22 +49,7 @@ public class UserService {
             throw new UserNotFoundException(String.format(INCORRECT_PARAMETER, "friendId", friendId));
         }
 
-        userStorage.findAllUsers()
-                .stream()
-                .filter(user -> user.getId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, userId)))
-                .getFriendshipStatus().keySet()
-                .add(friendId);
-
-        userStorage.findAllUsers()
-                .stream()
-                .filter(user -> user.getId().equals(friendId))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, friendId)))
-                .getFriendshipStatus().keySet()
-                .add(userId);
-
+        friendshipStorage.createFriendship(userId, friendId);
         log.debug(String.format("Пользователи с id %d и %d теперь друзья.", userId, friendId));
     }
 
@@ -75,22 +62,7 @@ public class UserService {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "friendId", friendId));
         }
 
-        userStorage.findAllUsers()
-                .stream()
-                .filter(user -> user.getId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, userId)))
-                .getFriendshipStatus().keySet()
-                .remove(friendId);
-
-        userStorage.findAllUsers()
-                .stream()
-                .filter(user -> user.getId().equals(friendId))
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND, friendId)))
-                .getFriendshipStatus().keySet()
-                .remove(userId);
-
+        friendshipStorage.deleteFriendship(userId, friendId);
         log.debug(String.format("Пользователи с id %d и %d теперь не друзья.", userId, friendId));
     }
 
@@ -99,10 +71,7 @@ public class UserService {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "id", userId));
         }
 
-        return userStorage.getUserById(userId).getFriendshipStatus().keySet()
-                .stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+        return friendshipStorage.getFriends(userId);
     }
 
     public Collection<User> getCommonFriends(long userId, long otherId) {
@@ -114,12 +83,6 @@ public class UserService {
             throw new ValidationException(String.format(INCORRECT_PARAMETER, "otherId", otherId));
         }
 
-        return userStorage.getUserById(userId).getFriendshipStatus().keySet()
-                .stream()
-                .filter(userStorage.getUserById(otherId).getFriendshipStatus().keySet()::contains)
-                .collect(Collectors.toList())
-                .stream()
-                .map(this::getUserById)
-                .collect(Collectors.toList());
+        return friendshipStorage.getCommonFriends(userId, otherId);
     }
 }

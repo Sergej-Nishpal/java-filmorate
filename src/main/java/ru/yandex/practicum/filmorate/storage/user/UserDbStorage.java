@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import ru.yandex.practicum.filmorate.service.UserMapper;
 import java.util.Collection;
 
 @Slf4j
@@ -30,7 +29,7 @@ public class UserDbStorage implements UserStorage {
     public Collection<User> findAllUsers() {
         final String sqlQuery = "SELECT * FROM USERS";
         log.debug("Запрашиваем всех пользователей из БД.");
-        return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
+        return jdbcTemplate.query(sqlQuery, (resultSet, rowNum) -> UserMapper.mapRowToUser(resultSet));
     }
 
     @Override
@@ -82,7 +81,7 @@ public class UserDbStorage implements UserStorage {
 
         final String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
         log.debug("Запрашиваем пользователя с id {}.", id);
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
+        return jdbcTemplate.query(sqlQuery, (resultSet, rowNum) -> UserMapper.mapRowToUser(resultSet), id).get(0);
     }
 
     private void validate(User user) {
@@ -90,15 +89,5 @@ public class UserDbStorage implements UserStorage {
             log.error("Пользователь с логином \"{}\" не прошёл валидацию.", user.getLogin());
             throw new ValidationException("Логин не должен содержать пробелы!");
         }
-    }
-
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
-        return User.builder()
-                .id(resultSet.getLong("USER_ID"))
-                .email(resultSet.getString("EMAIL"))
-                .login(resultSet.getString("LOGIN"))
-                .name(resultSet.getString("USER_NAME"))
-                .birthday(resultSet.getDate("BIRTHDAY").toLocalDate())
-                .build();
     }
 }
