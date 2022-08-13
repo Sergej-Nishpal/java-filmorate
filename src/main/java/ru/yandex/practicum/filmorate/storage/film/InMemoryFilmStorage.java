@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmStorage implements FilmStorage, FilmLikesStorage {
     private static final LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
     private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d.";
 
@@ -56,12 +57,19 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 
-    public void setLike(long filmId, long userId) {
+    @Override
+    public void addLike(long filmId, long userId) {
           getFilmById(filmId).getLikes().add(userId);
     }
 
-    public void unlike(long filmId, long userId) {
+    @Override
+    public void deleteLike(long filmId, long userId) {
         getFilmById(filmId).getLikes().remove(userId);
+    }
+
+    @Override
+    public int getLikesCount(long filmId) {
+        return 0; // TODO Что тут вернуть?
     }
 
     public Collection<Film> getPopularFilms(int count) {

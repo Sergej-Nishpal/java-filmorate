@@ -5,20 +5,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.LikesNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.filmgenres.FilmGenresStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.OptionalInt;
 
 @Slf4j
 @Component
 public class FilmLikesDbStorage implements FilmLikesStorage {
+    private final FilmGenresStorage filmGenresStorage;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FilmLikesDbStorage(JdbcTemplate jdbcTemplate) {
+    public FilmLikesDbStorage(FilmGenresStorage filmGenresStorage, JdbcTemplate jdbcTemplate) {
+        this.filmGenresStorage = filmGenresStorage;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -36,6 +39,17 @@ public class FilmLikesDbStorage implements FilmLikesStorage {
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
+    public Collection<Film> getPopularFilms(int count) {
+        final String sqlQuery = "SELECT F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
+                                "F.DURATION, F.MPA_ID, M.MPA_NAME FROM FILMS AS F " +
+                                "LEFT OUTER JOIN MPAS M on M.MPA_ID = F.MPA_ID " +
+                                "LEFT OUTER JOIN FILM_LIKES AS FL ON FL.FILM_ID = F.FILM_ID " +
+                                "GROUP BY F.FILM_ID " +
+                                "ORDER BY COUNT(FL.FILM_ID) DESC LIMIT ?";
+        log.debug("Запрашиваем наиболее популярные фильмы из БД в количестве {}.", count);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+    }
+
     @Override
     public int getLikesCount(long filmId) {
         final String sqlQuery = "SELECT COUNT(USER_ID) AS COUNT FROM FILM_LIKES WHERE FILM_ID = ?";
@@ -50,5 +64,17 @@ public class FilmLikesDbStorage implements FilmLikesStorage {
 
     private int getCountFromResultSet(ResultSet rs) throws SQLException {
         return rs.getInt("COUNT");
+    }
+
+    private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
+        return Film.builder()
+                .id(rs.getLong("FILM_ID"))
+                .name(rs.getString("FILM_NAME"))
+                .description(rs.getString("DESCRIPTION"))
+                .releaseDate(rs.getDate("RELEASE_DATE").toLocalDate())
+                .duration(rs.getInt("DURATION"))
+                .mpa(new Mpa(rs.getLong("MPA_ID"), rs.getString("MPA_NAME")))
+                .genres(filmGenresStorage.getFilmGenres(rs.getLong("FILM_ID")))
+                .build();
     }
 }

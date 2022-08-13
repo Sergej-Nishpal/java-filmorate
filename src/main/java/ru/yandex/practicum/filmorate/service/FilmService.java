@@ -6,9 +6,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
-
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
@@ -16,7 +14,8 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final FilmLikesStorage filmLikesStorage;
 
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, FilmLikesStorage filmLikesStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("filmLikesDbStorage") FilmLikesStorage filmLikesStorage) {
         this.filmStorage = filmStorage;
         this.filmLikesStorage = filmLikesStorage;
     }
@@ -47,10 +46,6 @@ public class FilmService {
         }
 
         filmLikesStorage.addLike(filmId, userId);
-
-        /*filmStorage.getFilmById(filmId)
-                .getLikes()
-                .add(userId);*/
     }
 
     public void unlike(long filmId, long userId) {
@@ -63,10 +58,6 @@ public class FilmService {
         }
 
         filmLikesStorage.deleteLike(filmId, userId);
-
-        /*filmStorage.getFilmById(filmId)
-                .getLikes()
-                .remove(userId);*/
     }
 
     public Collection<Film> getPopularFilms(int count) {
@@ -74,9 +65,6 @@ public class FilmService {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "count", count));
         }
 
-        return filmStorage.getAllFilms().stream()
-                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmLikesStorage.getPopularFilms(count);
     }
 }

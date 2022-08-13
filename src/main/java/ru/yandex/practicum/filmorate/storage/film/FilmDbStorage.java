@@ -59,7 +59,7 @@ public class FilmDbStorage implements FilmStorage {
         checkIfFilmExists(film.getId());
         validate(film);
         final String sqlQuery =
-                "UPDATE films SET " +
+                "UPDATE FILMS SET " +
                         "FILM_NAME = ?, " +
                         "DESCRIPTION = ?, " +
                         "RELEASE_DATE = ?, " +
@@ -87,7 +87,7 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         try {
-            final String sqlQuery = "SELECT * FROM FILMS LEFT JOIN MPAS M on M.MPA_ID = FILMS.MPA_ID WHERE FILM_ID = ?";
+            final String sqlQuery = "SELECT * FROM FILMS LEFT JOIN MPAS M ON M.MPA_ID = FILMS.MPA_ID WHERE FILM_ID = ?";
             log.debug("Запрашиваем фильм с id {}.", filmId);
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
         } catch (EmptyResultDataAccessException e) {

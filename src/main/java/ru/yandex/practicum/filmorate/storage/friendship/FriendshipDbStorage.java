@@ -8,8 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserMapper;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 
 @Slf4j
@@ -52,7 +53,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
                                 "LEFT OUTER JOIN FRIENDSHIPS AS F ON U.USER_ID = F.FRIEND_ID " +
                                 "WHERE F.USER_ID = ?";
         log.debug("Запрашиваем друзей пользователя из БД.");
-        return jdbcTemplate.query(sqlQuery, (resultSet, rowNum) -> UserMapper.mapRowToUser(resultSet), userId);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
     }
 
     @Override
@@ -65,7 +66,18 @@ public class FriendshipDbStorage implements FriendshipStorage {
                                 "SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ?)";
 
         log.debug("Запрашиваем общих друзей двух пользователей из БД.");
-        return jdbcTemplate.query(sqlQuery, (resultSet, rowNum) -> UserMapper.mapRowToUser(resultSet), userId, otherId);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, otherId);
+    }
+
+    public User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
+
+        return User.builder()
+                .id(resultSet.getLong("USER_ID"))
+                .email(resultSet.getString("EMAIL"))
+                .login(resultSet.getString("LOGIN"))
+                .name(resultSet.getString("USER_NAME"))
+                .birthday(resultSet.getDate("BIRTHDAY").toLocalDate())
+                .build();
     }
 
     private void checkIfUserExists(long userId) {
