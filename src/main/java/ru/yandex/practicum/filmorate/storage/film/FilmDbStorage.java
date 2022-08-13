@@ -109,7 +109,6 @@ public class FilmDbStorage implements FilmStorage {
 
     private void addFilmGenres(final Film film) {
         final Set<Genre> filmGenres = film.getGenres();
-
         if (!filmGenres.isEmpty()) {
             for (Genre genre : filmGenres) {
                 filmGenresStorage.addFilmGenre(film.getId(), genre.getId());
@@ -122,7 +121,6 @@ public class FilmDbStorage implements FilmStorage {
 
     private void deleteFilmGenres(final Film film) {
         final Set<Genre> filmGenres = film.getGenres();
-
         if (!filmGenres.isEmpty()) {
             for (Genre genre : filmGenres) {
                 filmGenresStorage.deleteFilmGenre(film.getId(), genre.getId());
@@ -133,14 +131,15 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
         return Film.builder()
-                .id(resultSet.getLong("FILM_ID"))
-                .name(resultSet.getString("FILM_NAME"))
-                .description(resultSet.getString("DESCRIPTION"))
-                .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
-                .duration(resultSet.getInt("DURATION"))
-                .mpa(new Mpa(resultSet.getLong("MPA_ID"), resultSet.getString("MPA_NAME")))
+                .id(rs.getLong("FILM_ID"))
+                .name(rs.getString("FILM_NAME"))
+                .description(rs.getString("DESCRIPTION"))
+                .releaseDate(rs.getDate("RELEASE_DATE").toLocalDate())
+                .duration(rs.getInt("DURATION"))
+                .mpa(new Mpa(rs.getLong("MPA_ID"), rs.getString("MPA_NAME")))
+                .genres(filmGenresStorage.getFilmGenres(rs.getLong("FILM_ID")))
                 .build();
     }
 }

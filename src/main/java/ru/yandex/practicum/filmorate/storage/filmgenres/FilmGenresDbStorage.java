@@ -4,6 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Genre;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -25,5 +30,21 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     public void deleteFilmGenre(long filmId, long genreId) {
         final String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ? AND GENRE_ID = ?";
         jdbcTemplate.update(sqlQuery,filmId, genreId);
+    }
+
+    @Override
+    public Set<Genre> getFilmGenres(long filmId) {
+        final String sqlQuery = "SELECT G.GENRE_ID, G.GENRE_NAME FROM FILM_GENRES FG " +
+                                "LEFT OUTER JOIN GENRES G ON FG.GENRE_ID = G.GENRE_ID " +
+                                "WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToGenresSet, filmId);
+    }
+
+    private Set<Genre> mapRowToGenresSet(ResultSet rs) throws SQLException {
+        Set<Genre> genresSet = new HashSet<>();
+        while (rs.next()) {
+            genresSet.add(new Genre(rs.getLong("GENRE_ID"), rs.getString("GENRE_NAME")));
+        }
+        return genresSet;
     }
 }

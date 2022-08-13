@@ -40,7 +40,7 @@ public class Film {
 
     private final Set<Long> likes = new HashSet<>();
 
-    private final Set<Genre> genres = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
 
     @NotNull
     private Mpa mpa;
