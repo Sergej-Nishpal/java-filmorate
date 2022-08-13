@@ -23,13 +23,15 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     @Override
     public void addFilmGenre(long filmId, long genreId) {
         final String sqlQuery = "INSERT INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery,filmId, genreId);
+        log.debug("Добавляем фильму с id = {} жанр с id = {}", filmId, genreId);
+        jdbcTemplate.update(sqlQuery, filmId, genreId);
     }
 
     @Override
     public void deleteFilmGenre(long filmId, long genreId) {
         final String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ? AND GENRE_ID = ?";
-        jdbcTemplate.update(sqlQuery,filmId, genreId);
+        log.debug("Удаляем у фильма с id = {} жанр с id = {}", filmId, genreId);
+        jdbcTemplate.update(sqlQuery, filmId, genreId);
     }
 
     @Override
@@ -37,6 +39,7 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
         final String sqlQuery = "SELECT G.GENRE_ID, G.GENRE_NAME FROM FILM_GENRES FG " +
                                 "LEFT OUTER JOIN GENRES G ON FG.GENRE_ID = G.GENRE_ID " +
                                 "WHERE FILM_ID = ?";
+        log.debug("Запрашиваем жанры фильма с id = {}", filmId);
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenresSet, filmId);
     }
 

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -53,6 +54,21 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
         return films.get(id);
+    }
+
+    public void setLike(long filmId, long userId) {
+          getFilmById(filmId).getLikes().add(userId);
+    }
+
+    public void unlike(long filmId, long userId) {
+        getFilmById(filmId).getLikes().remove(userId);
+    }
+
+    public Collection<Film> getPopularFilms(int count) {
+        return getAllFilms().stream()
+                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     private void validate(Film film) {
