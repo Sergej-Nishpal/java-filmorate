@@ -49,7 +49,8 @@ public class FriendshipDbStorage implements FriendshipStorage {
     public Collection<User> getFriends(long userId) {
         checkIfUserExists(userId);
         final String sqlQuery = "SELECT * FROM USERS AS U " +
-                "LEFT OUTER JOIN FRIENDSHIPS AS F ON U.USER_ID = F.FRIEND_ID WHERE F.USER_ID = ?";
+                                "LEFT OUTER JOIN FRIENDSHIPS AS F ON U.USER_ID = F.FRIEND_ID " +
+                                "WHERE F.USER_ID = ?";
         log.debug("Запрашиваем друзей пользователя из БД.");
         return jdbcTemplate.query(sqlQuery, (resultSet, rowNum) -> UserMapper.mapRowToUser(resultSet), userId);
     }
