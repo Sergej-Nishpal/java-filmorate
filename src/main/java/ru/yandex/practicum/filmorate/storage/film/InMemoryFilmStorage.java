@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
+import java.util.Map;
+import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import java.util.stream.Collectors;
+import ru.yandex.practicum.filmorate.model.Film;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
 
 @Slf4j
 @Component
@@ -69,7 +69,7 @@ public class InMemoryFilmStorage implements FilmStorage, FilmLikesStorage {
 
     @Override
     public int getLikesCount(long filmId) {
-        return 0; // TODO Что тут вернуть?
+        return getFilmById(filmId).getLikes().size();
     }
 
     public Collection<Film> getPopularFilms(int count) {
