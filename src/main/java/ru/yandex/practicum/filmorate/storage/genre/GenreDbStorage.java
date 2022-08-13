@@ -24,7 +24,7 @@ public class GenreDbStorage implements GenreStorage {
     }
     @Override
     public Collection<Genre> getAllGenres() {
-        final String sqlQuery = "SELECT * FROM GENRES";
+        final String sqlQuery = "SELECT * FROM GENRES ORDER BY GENRE_ID";
         log.debug("Запрашиваем все жанры из БД.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
@@ -49,7 +49,7 @@ public class GenreDbStorage implements GenreStorage {
     private Genre mapRowToGenre(ResultSet rs, int rowNum) throws SQLException {
         return Genre.builder()
                 .id(rs.getLong("GENRE_ID"))
-                .genreName(rs.getString("GENRE_NAME"))
+                .name(rs.getString("GENRE_NAME"))
                 .build();
     }
 }

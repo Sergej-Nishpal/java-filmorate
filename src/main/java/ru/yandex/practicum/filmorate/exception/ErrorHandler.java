@@ -17,8 +17,8 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class,
-                     LikesNotFoundException.class, GenreNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class, LikesNotFoundException.class,
+                       GenreNotFoundException.class, MpaNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final RuntimeException e) {
         log.error("404 - Объект не найден: {} ", e.getMessage(), e);

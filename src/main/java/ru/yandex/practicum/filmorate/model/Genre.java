@@ -14,5 +14,5 @@ public class Genre {
 
     @NotNull
     @NotEmpty
-    private String genreName;
+    private String name;
 }

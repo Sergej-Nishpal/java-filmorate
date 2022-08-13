@@ -14,5 +14,5 @@ public class Mpa {
 
     @NotNull
     @NotEmpty
-    private String mpaName;
+    private String name;
 }

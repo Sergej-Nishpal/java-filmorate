@@ -28,10 +28,10 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     }
 
     @Override
-    public void deleteFilmGenre(long filmId, long genreId) {
-        final String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ? AND GENRE_ID = ?";
-        log.debug("Удаляем у фильма с id = {} жанр с id = {}", filmId, genreId);
-        jdbcTemplate.update(sqlQuery, filmId, genreId);
+    public void deleteFilmGenres(long filmId) {
+        final String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ?";
+        log.debug("Удаляем жанры фильма с id = {}.", filmId);
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 
     @Override
