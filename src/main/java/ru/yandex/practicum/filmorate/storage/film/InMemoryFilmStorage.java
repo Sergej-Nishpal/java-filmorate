@@ -67,11 +67,6 @@ public class InMemoryFilmStorage implements FilmStorage, FilmLikesStorage {
         getFilmById(filmId).getLikes().remove(userId);
     }
 
-    @Override
-    public int getLikesCount(long filmId) {
-        return getFilmById(filmId).getLikes().size();
-    }
-
     public Collection<Film> getPopularFilms(int count) {
         return getAllFilms().stream()
                 .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())

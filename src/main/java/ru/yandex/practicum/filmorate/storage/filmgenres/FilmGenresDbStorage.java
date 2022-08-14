@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.storage.filmgenres;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
-import java.sql.ResultSet;
+import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,8 +38,8 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     @Override
     public Set<Genre> getFilmGenres(long filmId) {
         final String sqlQuery = "SELECT G.GENRE_ID, G.GENRE_NAME FROM FILM_GENRES FG " +
-                                "LEFT OUTER JOIN GENRES G ON FG.GENRE_ID = G.GENRE_ID " +
-                                "WHERE FILM_ID = ?";
+                "LEFT OUTER JOIN GENRES G ON FG.GENRE_ID = G.GENRE_ID " +
+                "WHERE FILM_ID = ?";
         log.debug("Запрашиваем жанры фильма с id = {}", filmId);
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenresSet, filmId);
     }

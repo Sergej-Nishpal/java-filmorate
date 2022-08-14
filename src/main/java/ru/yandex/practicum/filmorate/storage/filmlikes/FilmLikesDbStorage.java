@@ -1,17 +1,16 @@
 package ru.yandex.practicum.filmorate.storage.filmlikes;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.LikesNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.filmgenres.FilmGenresStorage;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Objects;
+import java.sql.SQLException;
+
+import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Film;
+import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.storage.filmgenres.FilmGenresStorage;
 
 @Slf4j
 @Component
@@ -41,29 +40,13 @@ public class FilmLikesDbStorage implements FilmLikesStorage {
 
     public Collection<Film> getPopularFilms(int count) {
         final String sqlQuery = "SELECT F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.RELEASE_DATE, " +
-                                "F.DURATION, F.MPA_ID, M.MPA_NAME FROM FILMS AS F " +
-                                "LEFT OUTER JOIN MPAS M on M.MPA_ID = F.MPA_ID " +
-                                "LEFT OUTER JOIN FILM_LIKES AS FL ON FL.FILM_ID = F.FILM_ID " +
-                                "GROUP BY F.FILM_ID " +
-                                "ORDER BY COUNT(FL.FILM_ID) DESC LIMIT ?";
+                "F.DURATION, F.MPA_ID, M.MPA_NAME FROM FILMS AS F " +
+                "LEFT OUTER JOIN MPAS M on M.MPA_ID = F.MPA_ID " +
+                "LEFT OUTER JOIN FILM_LIKES AS FL ON FL.FILM_ID = F.FILM_ID " +
+                "GROUP BY F.FILM_ID " +
+                "ORDER BY COUNT(FL.FILM_ID) DESC LIMIT ?";
         log.debug("Запрашиваем наиболее популярные фильмы из БД в количестве {}.", count);
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
-    }
-
-    @Override
-    public int getLikesCount(long filmId) {
-        final String sqlQuery = "SELECT COUNT(USER_ID) AS COUNT FROM FILM_LIKES WHERE FILM_ID = ?";
-        log.debug("Получаем количество лайков фильма с id = {}.", filmId);
-        try {
-            return Objects.requireNonNull(jdbcTemplate.query(sqlQuery, this::getCountFromResultSet));
-        } catch (NullPointerException e) {
-            log.error("У фильма с id {} лайки не найдены.", filmId);
-            throw new LikesNotFoundException("У фильма с id = " + filmId + " лайки не найдены.");
-        }
-    }
-
-    private int getCountFromResultSet(ResultSet rs) throws SQLException {
-        return rs.getInt("COUNT");
     }
 
     private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
