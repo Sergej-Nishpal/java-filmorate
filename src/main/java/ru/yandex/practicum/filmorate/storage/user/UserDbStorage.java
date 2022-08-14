@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -64,11 +65,11 @@ public class UserDbStorage implements UserStorage {
         final String sqlQuery = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? WHERE USER_ID = ?";
         final int recordsUpdated =
                 jdbcTemplate.update(sqlQuery,
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday(),
-                user.getId());
+                        user.getEmail(),
+                        user.getLogin(),
+                        user.getName(),
+                        user.getBirthday(),
+                        user.getId());
         log.debug("Пользователей обновлено: {}", recordsUpdated);
         return user;
     }

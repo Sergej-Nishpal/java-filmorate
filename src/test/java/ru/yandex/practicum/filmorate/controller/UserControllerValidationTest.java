@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -61,10 +62,10 @@ class UserControllerValidationTest {
 
     static Stream<Arguments> userFieldsValuesAndExpectedViolationSize() {
         return Stream.of(
-                arguments(EMPTY_EMAIL,     CORRECT_LOGIN, USER_NAME, CORRECT_BIRTHDAY,   1),
-                arguments(INCORRECT_EMAIL, CORRECT_LOGIN, USER_NAME, CORRECT_BIRTHDAY,   1),
-                arguments(CORRECT_EMAIL,   EMPTY_LOGIN,   USER_NAME, CORRECT_BIRTHDAY,   1),
-                arguments(CORRECT_EMAIL,   CORRECT_LOGIN, USER_NAME, INCORRECT_BIRTHDAY, 1)
+                arguments(EMPTY_EMAIL, CORRECT_LOGIN, USER_NAME, CORRECT_BIRTHDAY, 1),
+                arguments(INCORRECT_EMAIL, CORRECT_LOGIN, USER_NAME, CORRECT_BIRTHDAY, 1),
+                arguments(CORRECT_EMAIL, EMPTY_LOGIN, USER_NAME, CORRECT_BIRTHDAY, 1),
+                arguments(CORRECT_EMAIL, CORRECT_LOGIN, USER_NAME, INCORRECT_BIRTHDAY, 1)
         );
     }
 

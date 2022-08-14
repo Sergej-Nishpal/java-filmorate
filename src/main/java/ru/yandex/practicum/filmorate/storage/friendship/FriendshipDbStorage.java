@@ -32,27 +32,27 @@ public class FriendshipDbStorage implements FriendshipStorage {
         checkIfUserExists(userId);
         checkIfUserExists(friendId);
         final String sqlQuery = "INSERT INTO FRIENDSHIPS (USER_ID, FRIEND_ID, STATUS_ID) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery,userId, friendId, 1);
+        jdbcTemplate.update(sqlQuery, userId, friendId, 1);
     }
 
     @Override
     public void confirmFriendship(long userId, long friendId) {
         final String sqlQuery = "INSERT INTO FRIENDSHIPS (USER_ID, FRIEND_ID, STATUS_ID) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery,userId, friendId, 2);
+        jdbcTemplate.update(sqlQuery, userId, friendId, 2);
     }
 
     @Override
     public void deleteFriendship(long userId, long friendId) {
         final String sqlQuery = "DELETE FROM FRIENDSHIPS WHERE USER_ID = ? AND FRIEND_ID = ?";
-        jdbcTemplate.update(sqlQuery,userId, friendId);
+        jdbcTemplate.update(sqlQuery, userId, friendId);
     }
 
     @Override
     public Collection<User> getFriends(long userId) {
         checkIfUserExists(userId);
         final String sqlQuery = "SELECT * FROM USERS AS U " +
-                                "LEFT OUTER JOIN FRIENDSHIPS AS F ON U.USER_ID = F.FRIEND_ID " +
-                                "WHERE F.USER_ID = ?";
+                "LEFT OUTER JOIN FRIENDSHIPS AS F ON U.USER_ID = F.FRIEND_ID " +
+                "WHERE F.USER_ID = ?";
         log.debug("Запрашиваем друзей пользователя из БД.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
     }
@@ -62,9 +62,9 @@ public class FriendshipDbStorage implements FriendshipStorage {
         checkIfUserExists(userId);
         checkIfUserExists(otherId);
         final String sqlQuery = "SELECT * FROM USERS WHERE USER_ID  = " +
-                                "(SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ? " +
-                                "INTERSECT " +
-                                "SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ?)";
+                "(SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ? " +
+                "INTERSECT " +
+                "SELECT FRIEND_ID FROM FRIENDSHIPS WHERE USER_ID = ?)";
 
         log.debug("Запрашиваем общих друзей двух пользователей из БД.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, otherId);

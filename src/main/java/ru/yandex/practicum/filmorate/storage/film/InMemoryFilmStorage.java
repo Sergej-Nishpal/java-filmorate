@@ -4,8 +4,11 @@ import java.util.Map;
 import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.Collection;
+
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.stream.Collectors;
+
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -59,7 +62,7 @@ public class InMemoryFilmStorage implements FilmStorage, FilmLikesStorage {
 
     @Override
     public void addLike(long filmId, long userId) {
-          getFilmById(filmId).getLikes().add(userId);
+        getFilmById(filmId).getLikes().add(userId);
     }
 
     @Override

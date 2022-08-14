@@ -23,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FilmDbStorageTest {
-    private static final String FILM_NAME             = "Интерстеллар";
+    private static final String FILM_NAME = "Интерстеллар";
     private static final String INCORRECT_DESCRIPTION = "Фильм о путешествиях uheggs исследователей, которые...";
-    private static final String CORRECT_DESCRIPTION   = "Фильм о путешествиях группы исследователей, которые...";
-    private static final LocalDate FILM_RELEASE_DATE  = LocalDate.of(2014, 11, 18);
-    private static final int FILM_DURATION            = 169;
-    private static final long PG_13_ID                = 3L;
-    private static final String PG_13_NAME            = "PG-13";
+    private static final String CORRECT_DESCRIPTION = "Фильм о путешествиях группы исследователей, которые...";
+    private static final LocalDate FILM_RELEASE_DATE = LocalDate.of(2014, 11, 18);
+    private static final int FILM_DURATION = 169;
+    private static final long PG_13_ID = 3L;
+    private static final String PG_13_NAME = "PG-13";
 
     private final FilmDbStorage filmStorage;
 

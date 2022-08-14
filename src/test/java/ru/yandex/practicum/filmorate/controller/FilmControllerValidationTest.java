@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -75,9 +76,9 @@ class FilmControllerValidationTest {
 
     static Stream<Arguments> filmFieldsValuesAndExpectedViolationSize() {
         return Stream.of(
-                arguments("       ", getTextWith199Chars(), CORRECT_RELEASE_DATE,   CORRECT_FILM_DURATION,   MPA, 1),
-                arguments(FILM_NAME, getTextWith201Chars(), CORRECT_RELEASE_DATE,   CORRECT_FILM_DURATION,   MPA, 1),
-                arguments(FILM_NAME, getTextWith199Chars(), CORRECT_RELEASE_DATE,   INCORRECT_FILM_DURATION, MPA, 1)
+                arguments("       ", getTextWith199Chars(), CORRECT_RELEASE_DATE, CORRECT_FILM_DURATION, MPA, 1),
+                arguments(FILM_NAME, getTextWith201Chars(), CORRECT_RELEASE_DATE, CORRECT_FILM_DURATION, MPA, 1),
+                arguments(FILM_NAME, getTextWith199Chars(), CORRECT_RELEASE_DATE, INCORRECT_FILM_DURATION, MPA, 1)
         );
     }
 
