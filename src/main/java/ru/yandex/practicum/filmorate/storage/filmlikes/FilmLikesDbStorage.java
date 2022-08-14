@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.storage.filmlikes;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.exception.LikesNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,21 @@ public class FilmLikesDbStorage implements FilmLikesStorage {
         final String sqlQuery = "DELETE FROM FILM_LIKES WHERE FILM_ID = ? AND USER_ID = ?";
         log.debug("Удаляем у фильма с id = {} лайк пользователя с id = {}.", filmId, userId);
         jdbcTemplate.update(sqlQuery, filmId, userId);
+    }
+
+    public int getLikesCount(long filmId) {
+        final String sqlQuery = "SELECT COUNT(USER_ID) AS COUNT FROM FILM_LIKES WHERE FILM_ID = ?";
+        log.debug("Получаем количество лайков фильма с id = {}.", filmId);
+        try {
+            return Objects.requireNonNull(jdbcTemplate.query(sqlQuery, this::getCountFromResultSet, filmId));
+        } catch (NullPointerException e) {
+            log.error("У фильма с id {} лайки не найдены.", filmId);
+            throw new LikesNotFoundException("У фильма с id = " + filmId + " лайки не найдены.");
+        }
+    }
+
+    private int getCountFromResultSet(ResultSet rs) throws SQLException {
+        return rs.next() ? rs.getInt("COUNT") : 0;
     }
 
     public Collection<Film> getPopularFilms(int count) {
