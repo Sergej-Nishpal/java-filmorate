@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryFriendshipStorage implements FriendshipStorage {
     private static final String USER_ID_NOT_FOUND = "Пользователь с id %d не найден";
+
     private final UserStorage userStorage;
 
     public InMemoryFriendshipStorage(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
