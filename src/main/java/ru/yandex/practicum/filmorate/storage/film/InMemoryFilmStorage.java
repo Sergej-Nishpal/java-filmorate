@@ -4,20 +4,16 @@ import java.util.Map;
 import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.Collection;
-
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.stream.Collectors;
-
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage, FilmLikesStorage {
+public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
     private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d.";
 

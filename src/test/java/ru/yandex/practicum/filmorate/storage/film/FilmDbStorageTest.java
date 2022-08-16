@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,5 +88,63 @@ class FilmDbStorageTest {
         final Film updatedFilm = filmStorage.updateFilm(filmForUpdate);
         assertThat(updatedFilm)
                 .hasFieldOrPropertyWithValue("description", CORRECT_DESCRIPTION);
+    }
+
+    @Test
+    @Order(5)
+    void testAddLike() {
+        final long filmId = 1; // у фильма с id = 1 есть лайки от пользователей с id = 1 и id = 3
+        final int expectedLikesSize = 2;
+        final int actualLikesCount = filmStorage.getLikesCount(filmId);
+        AssertionsForClassTypes.assertThat(actualLikesCount)
+                .isEqualTo(expectedLikesSize);
+
+        final long userId = 2;
+        filmStorage.addLike(filmId, userId);
+        final int expectedLikesSizeAfterAddingLike = 3;
+        final int actualLikesCountAfterAddingLike = filmStorage.getLikesCount(filmId);
+        AssertionsForClassTypes.assertThat(actualLikesCountAfterAddingLike)
+                .isEqualTo(expectedLikesSizeAfterAddingLike);
+    }
+
+    @Test
+    @Order(6)
+    void testDeleteLike() {
+        final long filmId = 1; // тот же фильм
+        final int expectedLikesSize = 3; // лайков сейчас 3
+        final int actualLikesCount = filmStorage.getLikesCount(filmId);
+        AssertionsForClassTypes.assertThat(actualLikesCount)
+                .isEqualTo(expectedLikesSize);
+
+        final long userId = 1; // убираем лайк пользователя с id = 1
+        filmStorage.deleteLike(filmId, userId);
+        final int expectedLikesSizeAfterDeleteLike = 2;
+        final int actualLikesCountAfterDeleteLike = filmStorage.getLikesCount(filmId);
+        AssertionsForClassTypes.assertThat(actualLikesCountAfterDeleteLike)
+                .isEqualTo(expectedLikesSizeAfterDeleteLike);
+    }
+
+    @Test
+    @Order(7)
+    void testGetPopularFilms() {
+        final int expectedCountForTopListOfFilms = 3;
+        final String expectedFirstPlaceFilmName = "Начало";
+        final String expectedSecondPlaceFilmName = "Властелин колец";
+        final String expectedThirdPlaceFilmName = "Криминальное чтиво";
+
+        final List<Film> popularFilmList = new ArrayList<>(filmStorage.getPopularFilms(expectedCountForTopListOfFilms));
+        final int actualCountForTopListOfFilms = popularFilmList.size();
+        final String actualFirstPlaceFilmName = popularFilmList.get(0).getName();
+        final String actualSecondPlaceFilmName = popularFilmList.get(1).getName();
+        final String actualThirdPlaceFilmName = popularFilmList.get(2).getName();
+
+        AssertionsForClassTypes.assertThat(actualCountForTopListOfFilms)
+                .isEqualTo(expectedCountForTopListOfFilms);
+        AssertionsForClassTypes.assertThat(actualFirstPlaceFilmName)
+                .isEqualTo(expectedFirstPlaceFilmName);
+        AssertionsForClassTypes.assertThat(actualSecondPlaceFilmName)
+                .isEqualTo(expectedSecondPlaceFilmName);
+        AssertionsForClassTypes.assertThat(actualThirdPlaceFilmName)
+                .isEqualTo(expectedThirdPlaceFilmName);
     }
 }

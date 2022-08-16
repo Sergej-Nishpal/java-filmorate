@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
 
 import java.util.Collection;
 
@@ -13,12 +12,9 @@ import java.util.Collection;
 public class FilmService {
     private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d.";
     private final FilmStorage filmStorage;
-    private final FilmLikesStorage filmLikesStorage;
 
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("filmLikesDbStorage") FilmLikesStorage filmLikesStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
-        this.filmLikesStorage = filmLikesStorage;
     }
 
     public Collection<Film> getAllFilms() {
@@ -46,7 +42,7 @@ public class FilmService {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "userId", userId));
         }
 
-        filmLikesStorage.addLike(filmId, userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void unlike(long filmId, long userId) {
@@ -58,7 +54,7 @@ public class FilmService {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "userId", userId));
         }
 
-        filmLikesStorage.deleteLike(filmId, userId);
+        filmStorage.deleteLike(filmId, userId);
     }
 
     public Collection<Film> getPopularFilms(int count) {
@@ -66,6 +62,6 @@ public class FilmService {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "count", count));
         }
 
-        return filmLikesStorage.getPopularFilms(count);
+        return filmStorage.getPopularFilms(count);
     }
 }
