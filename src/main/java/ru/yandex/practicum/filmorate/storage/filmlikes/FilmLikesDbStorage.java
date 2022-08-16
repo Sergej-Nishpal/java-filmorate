@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exception.LikesNotFoundException;
+import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class FilmLikesDbStorage implements FilmLikesStorage {
             return Objects.requireNonNull(jdbcTemplate.query(sqlQuery, this::getCountFromResultSet, filmId));
         } catch (NullPointerException e) {
             log.error("У фильма с id {} лайки не найдены.", filmId);
-            throw new LikesNotFoundException("У фильма с id = " + filmId + " лайки не найдены.");
+            throw new LikeNotFoundException("У фильма с id = " + filmId + " лайки не найдены.");
         }
     }
 
