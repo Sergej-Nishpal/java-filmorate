@@ -7,9 +7,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.RatingMPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -22,14 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class FilmControllerValidationTest {
+public class FilmControllerValidationTest {
     private final static String FILM_NAME = "Film name";
     private final static LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
     private final static LocalDate CORRECT_RELEASE_DATE = CINEMA_BORN_DATE.plusYears(100);
     private final static LocalDate INCORRECT_RELEASE_DATE = CINEMA_BORN_DATE.minusDays(1);
     private final static int CORRECT_FILM_DURATION = 105;
     private final static int INCORRECT_FILM_DURATION = 0;
-    private final static RatingMPA RATING_MPA = RatingMPA.PG13;
+    private final static Mpa MPA = new Mpa(1L, "PG-13");
 
     private final FilmStorage filmStorage = new InMemoryFilmStorage();
     private Validator validator;
@@ -43,13 +44,13 @@ class FilmControllerValidationTest {
     @ParameterizedTest
     @MethodSource("filmFieldsValuesAndExpectedViolationSize")
     void testWithMultiArgMethodSource(final String name, final String description, final LocalDate releaseDate,
-                                      final int duration, final RatingMPA ratingMPA, final int expectedViolationsSize) {
+                                      final int duration, final Mpa mpa, final int expectedViolationsSize) {
         Film film = Film.builder()
                 .name(name)
                 .description(description)
                 .releaseDate(releaseDate)
                 .duration(duration)
-                .ratingMPA(ratingMPA)
+                .mpa(mpa)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         final int actualViolationsSize = violations.size();
@@ -64,7 +65,7 @@ class FilmControllerValidationTest {
                 .description(getTextWith199Chars())
                 .releaseDate(INCORRECT_RELEASE_DATE)
                 .duration(CORRECT_FILM_DURATION)
-                .ratingMPA(RATING_MPA)
+                .mpa(MPA)
                 .build();
 
         ValidationException exception = assertThrows(ValidationException.class, () -> filmStorage.createFilm(film));
@@ -75,9 +76,9 @@ class FilmControllerValidationTest {
 
     static Stream<Arguments> filmFieldsValuesAndExpectedViolationSize() {
         return Stream.of(
-                arguments("       ", getTextWith199Chars(), CORRECT_RELEASE_DATE,   CORRECT_FILM_DURATION,   RATING_MPA, 1),
-                arguments(FILM_NAME, getTextWith201Chars(), CORRECT_RELEASE_DATE,   CORRECT_FILM_DURATION,   RATING_MPA, 1),
-                arguments(FILM_NAME, getTextWith199Chars(), CORRECT_RELEASE_DATE,   INCORRECT_FILM_DURATION, RATING_MPA, 1)
+                arguments("       ", getTextWith199Chars(), CORRECT_RELEASE_DATE, CORRECT_FILM_DURATION, MPA, 1),
+                arguments(FILM_NAME, getTextWith201Chars(), CORRECT_RELEASE_DATE, CORRECT_FILM_DURATION, MPA, 1),
+                arguments(FILM_NAME, getTextWith199Chars(), CORRECT_RELEASE_DATE, INCORRECT_FILM_DURATION, MPA, 1)
         );
     }
 

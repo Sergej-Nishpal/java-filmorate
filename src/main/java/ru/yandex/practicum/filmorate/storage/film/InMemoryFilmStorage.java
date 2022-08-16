@@ -1,14 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
+import java.util.Map;
+import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
+import ru.yandex.practicum.filmorate.model.Film;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 
 @Slf4j
 @Component
@@ -53,6 +54,23 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new FilmNotFoundException(String.format(INCORRECT_PARAMETER, "id", id));
         }
         return films.get(id);
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+        getFilmById(filmId).getLikes().add(userId);
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        getFilmById(filmId).getLikes().remove(userId);
+    }
+
+    public Collection<Film> getPopularFilms(int count) {
+        return getAllFilms().stream()
+                .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     private void validate(Film film) {

@@ -1,10 +1,19 @@
 package ru.yandex.practicum.filmorate.model;
 
-public enum Genre {
-    COMEDY,
-    DRAMA,
-    CARTOON,
-    THRILLER,
-    DOCUMENTARY,
-    ACTION
+import lombok.*;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class Genre {
+    private Long id;
+
+    @NotNull
+    @NotEmpty
+    private String name;
 }

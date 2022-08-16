@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
