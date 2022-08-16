@@ -15,8 +15,6 @@ import java.util.Collection;
 @Slf4j
 @Component
 public class GenreDbStorage implements GenreStorage {
-    private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d";
-
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -33,10 +31,6 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre getGenreById(long genreId) {
-        if (genreId <= 0) {
-            log.error("Передан некорректный id = {}.", genreId);
-            throw new GenreNotFoundException(String.format(INCORRECT_PARAMETER, "id", genreId));
-        }
 
         try {
             final String sqlQuery = "SELECT * FROM GENRES WHERE GENRE_ID = ?";

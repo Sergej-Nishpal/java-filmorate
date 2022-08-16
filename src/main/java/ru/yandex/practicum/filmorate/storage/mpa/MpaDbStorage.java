@@ -6,7 +6,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
@@ -16,7 +15,6 @@ import java.util.Collection;
 @Slf4j
 @Component
 public class MpaDbStorage implements MpaStorage {
-    private static final String INCORRECT_PARAMETER = "Некорректный параметр %s = %d";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -34,10 +32,6 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa getMpaById(long mpaId) {
-        if (mpaId <= 0) {
-            log.error("Передан некорректный id = {}.", mpaId);
-            throw new MpaNotFoundException(String.format(INCORRECT_PARAMETER, "id", mpaId));
-        }
 
         try {
             final String sqlQuery = "SELECT * FROM MPAS WHERE MPA_ID = ?";
