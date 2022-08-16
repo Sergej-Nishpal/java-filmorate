@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class FilmorateApplicationTests {
+public class FilmorateApplicationTests {
 
     @Autowired
     UserController userController;

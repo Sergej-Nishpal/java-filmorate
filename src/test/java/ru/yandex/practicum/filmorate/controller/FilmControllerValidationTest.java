@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class FilmControllerValidationTest {
+public class FilmControllerValidationTest {
     private final static String FILM_NAME = "Film name";
     private final static LocalDate CINEMA_BORN_DATE = LocalDate.of(1895, 12, 28);
     private final static LocalDate CORRECT_RELEASE_DATE = CINEMA_BORN_DATE.plusYears(100);

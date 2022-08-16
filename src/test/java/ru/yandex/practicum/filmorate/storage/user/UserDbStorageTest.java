@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class UserDbStorageTest {
+public class UserDbStorageTest {
     private static final String USER_EMAIL = "sergej.nishpal@yandex.ru";
     private static final String USER_LOGIN = "Sergej_N";
     private static final String USER_NAME = "Sergej Nishpal";

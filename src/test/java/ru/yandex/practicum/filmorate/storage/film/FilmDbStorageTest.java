@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class FilmDbStorageTest {
+public class FilmDbStorageTest {
     private static final String FILM_NAME = "Интерстеллар";
     private static final String INCORRECT_DESCRIPTION = "Фильм о путешествиях uheggs исследователей, которые...";
     private static final String CORRECT_DESCRIPTION = "Фильм о путешествиях группы исследователей, которые...";

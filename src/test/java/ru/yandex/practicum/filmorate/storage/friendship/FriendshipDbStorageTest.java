@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class FriendshipDbStorageTest {
+public class FriendshipDbStorageTest {
     private final FriendshipDbStorage friendshipStorage;
 
     @Test

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class UserControllerValidationTest {
+public class UserControllerValidationTest {
     private final static LocalDate CORRECT_BIRTHDAY = LocalDate.of(1975, 2, 14);
     private final static LocalDate INCORRECT_BIRTHDAY = LocalDate.now().plusDays(1);
     private final static String USER_NAME = "Sergej Nishpal";

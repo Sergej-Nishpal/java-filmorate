@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class GenreDbStorageTest {
+public class GenreDbStorageTest {
     private final GenreDbStorage genreStorage;
 
     @Test
